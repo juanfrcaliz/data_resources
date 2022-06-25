@@ -6,5 +6,4 @@ setup(name='data_resources',
       version='1.0',
       description='Resources for working with data',
       author='juanfrcaliz',
-      packages=['data_resources'],
      )
