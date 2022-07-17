@@ -6,7 +6,28 @@ from sklearn.metrics import make_scorer, recall_score, classification_report, co
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 
 
-def calculateVIF(data_):
+def pca_variance_analysis(data: pd.DataFrame, step_size=10):
+    """
+    Simple function to explore how much of the data variance is explained
+    when grouped by principal components.
+    The results will be shown in a line graph.
+    :param data: pd.DataFrame with the data to analyze.
+    :param step_size: int, default = 10. Number of variables reduced in each step.
+    """
+    variance_explained = []
+    for n_features in tqdm.tqdm(range(len(data.columns), 0, -step_size)):
+        pca = PCA(n_components=n_features)
+        pca.fit_transform(data)
+        var = pca.explained_variance_ratio_.sum()
+        variance_explained.append({'n_features': n_features,
+                                   'variance': var})
+
+    pd.DataFrame(variance_explained).set_index('n_features').plot(figsize=(7, 5))
+    plt.title('Variance explained by number of dimensions with PCA', fontsize=18)
+    plt.show()
+
+
+def calculateVIF(data: pd.DataFrame) -> pd.DataFrame:
     """
     This function calculates the degree of multicollinearity existing among
     different variables in a dataset.
